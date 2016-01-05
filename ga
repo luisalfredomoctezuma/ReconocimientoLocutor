@@ -1,0 +1,81 @@
+% Initializing parameters
+clear; clc;
+stars = 10;
+iterations = 10;
+population = 10;
+mutation = 0.4;
+mutation_step = 0.4;
+grid_size = 10;  % se usa como el valor maximo que puede alcanzar un sonido
+
+% bd
+% Crear poblacion inicial
+star=[50 20 30 40 50 60 70 80 90 10]';
+disp('BD'),disp(star')
+% Entrada
+cit=[60 70 80 90 10 50 20 30 40 50]';
+disp('Entrada'),disp(cit')
+
+	
+
+% Funcion fitness
+for j = 1:population
+    for k = 1:stars
+        d(k)=abs(star(k,1) - cit(k,1));       
+    end
+end
+
+disp('errores '), disp(d)
+Error_promedio=mean(d)
+
+if Error_promedio>0
+	% Iteraciones
+	for i = 1:iterations
+	    %cit(:,2) = cit(:,2)/cit(1,2);
+	    pool = [];
+	    for l = 1:population
+	        if rand(1)<cit(l,1),pool=[cit(l,:)]; ,end
+	    end
+	    s = size(pool,1);
+	    if s/2 - round(s/2) ~=0 , pool = pool(1:s-1,:); , s = size(pool,1); , end
+	    for m = 1:s
+	        pool = [ pool ; [pool(m,1)]];
+	        pool = [ pool ; [pool(m,2) , 0]];
+	    end
+	    s = size(pool,1);
+	    for m = 1:s
+	        if ((rand < mutation) & (pool(m,1) < grid_size - mutation_step)) , pool(m,1)=pool(m,1)+(2*rand - 1)*mutation_step,end
+	    end
+	    temp = [cit ; pool];
+	    temporal=cit;
+	    aux=d;
+	    ts = size(temp,1);
+	    for j = 1:stars
+	        for k = 1:stars
+	            d1(k)=abs(star(k,1) - temporal(j,1));
+	            if d1(k)<d(k)
+	            	%disp('Es menor')
+	            	aux(k)=d1(k);
+	            else
+					%disp('Es mayor')
+					aux(k)=d(k);
+	            end
+	        end
+	    end
+	    %cit = temp(1:population,:);
+	end
+%aux
+	Error_promedio=mean(aux);
+
+	disp('error min'), disp(Error_promedio)
+
+	% round 2
+
+	%for k = 1:stars
+	%  d(k)=abs(star(k,1) - cit(k,2));       
+	%end
+	%disp('-----')
+	%d
+	%Error_promedio=mean(d)
+
+end
+	
